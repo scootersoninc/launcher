@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Launcher.qml</file>
+        <file>IconItem.qml</file>
+    </qresource>
+</RCC>
