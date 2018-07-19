@@ -22,6 +22,7 @@
 #include <QtQml/QQmlContext>
 #include <QtQml/qqml.h>
 #include <QQuickWindow>
+#include <QThread>
 
 #include <qlibwindowmanager.h>
 #include "applicationlauncher.h"
@@ -142,6 +143,16 @@ int main(int argc, char *argv[])
     QUrlQuery query;
     query.addQueryItem(QStringLiteral("token"), token);
     bindingAddress.setQuery(query);
+
+    const QByteArray hack_delay = qgetenv("HMI_LAUNCHER_STARTUP_DELAY");
+    int delay_time = 1;
+
+    if (!hack_delay.isEmpty()) {
+       delay_time = (QString::fromLocal8Bit(hack_delay)).toInt();
+    }
+
+    QThread::sleep(delay_time);
+    qDebug("Sleep %d sec to resolve race condtion between HomeScreen and Launcher", delay_time);
 
     // mail.qml loading
     QQmlApplicationEngine engine;
