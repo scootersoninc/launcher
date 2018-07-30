@@ -60,8 +60,10 @@ ApplicationModel::Private::Private()
         auto const id = jso["id"].toString();
         auto const icon = get_icon_name(jso);
 
-        // Hide HomeScreen icon itself
-        if (name != "launcher" && name != "homescreen-2017" && name != "OnScreenApp") {
+        if ( name != "launcher" &&
+             name != "homescreen-2017" &&
+             name != "homescreen" &&
+             name != "OnScreenApp") {
             this->data.append(AppInfo(icon, name, id));
         }
 
