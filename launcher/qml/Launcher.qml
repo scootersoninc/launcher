@@ -16,33 +16,38 @@
  * limitations under the License.
  */
 import QtQuick 2.6
+import QtQuick.Window 2.1
 import QtQuick.Layouts 1.1
 import QtQuick.Controls 2.0
 import AppModel 1.0
 
-ApplicationWindow {
-    id: root
-    // Layout.fillWidth: true
-    // Layout.fillHeight: true
-    // width: 1080
-    // Layout.preferredHeight: 1487
+Window {
+    visible: true
+    flags: Qt.FramelessWindowHint
+    width: container.width * container.scale
+    height: container.height * container.scale
 
     property int pid: -1
-    Image {
-        y: 218
-        anchors.centerIn: parent
-        source: './images/AGL_HMI_Blue_Background_Car-01.png'
-    }
 
+    Item {
+        id: container
+        anchors.centerIn: parent
+        width: 1080
+        height: 1487
+        scale: screenInfo.scale_factor()
+
+        Image {
+          anchors.centerIn: parent
+          source: './images/AGL_HMI_Blue_Background_Car-01.png'
+        }
 
     GridView {
         id: grid
-        x: 60
-        y: 100
-        width: 960
-        height: 1280
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
+        anchors {
+          topMargin: 60; bottomMargin: 0 
+          leftMargin: 60; rightMargin: 60
+          fill: parent
+        }
         contentHeight: 320
         flickableDirection: Flickable.AutoFlickDirection
         snapMode: GridView.SnapOneRow
@@ -65,10 +70,6 @@ ApplicationWindow {
             property int index: grid.indexAt(loc.mouseX, loc.mouseY)
             x: 62
             y: 264
-            anchors.rightMargin: 0
-            anchors.bottomMargin: 0
-            anchors.leftMargin: 0
-            anchors.topMargin: 0
             onPressAndHold: currentId = applicationModel.id(newIndex = index)
             onReleased: {
                 if (currentId === '') {
@@ -91,4 +92,5 @@ ApplicationWindow {
             }
         }
     }
+}
 }

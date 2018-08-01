@@ -100,6 +100,8 @@ int main(int argc, char *argv[])
         exit(EXIT_FAILURE);
     }
 
+    AGLScreenInfo screenInfo(layoutHandler->get_scale_factor());
+
     if (layoutHandler->requestSurface(myname) != 0) {
         exit(EXIT_FAILURE);
     }
@@ -156,9 +158,10 @@ int main(int argc, char *argv[])
 
     // mail.qml loading
     QQmlApplicationEngine engine;
-    engine.rootContext()->setContextProperty("layoutHandler", layoutHandler);
-    engine.rootContext()->setContextProperty("homescreenHandler", homescreenHandler);
-    engine.rootContext()->setContextProperty("launcher", launcher);
+    engine.rootContext()->setContextProperty(QStringLiteral("layoutHandler"), layoutHandler);
+    engine.rootContext()->setContextProperty(QStringLiteral("homescreenHandler"), homescreenHandler);
+    engine.rootContext()->setContextProperty(QStringLiteral("launcher"), launcher);
+    engine.rootContext()->setContextProperty(QStringLiteral("screenInfo"), &screenInfo);
     engine.load(QUrl(QStringLiteral("qrc:/Launcher.qml")));
 
     QObject *root = engine.rootObjects().first();
