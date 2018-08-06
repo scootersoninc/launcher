@@ -127,6 +127,12 @@ QString ApplicationModel::id(int i) const
     return data(index(i), Qt::UserRole).toString();
 }
 
+QString ApplicationModel::appid(int i) const
+{
+    QString id = data(index(i), Qt::UserRole).toString();
+    return id.split("@")[0];
+}
+
 QString ApplicationModel::name(int i) const
 {
     return data(index(i), Qt::DisplayRole).toString();
