@@ -16,14 +16,11 @@
  * limitations under the License.
  */
 import QtQuick 2.6
-import QtQuick.Window 2.1
 import QtQuick.Layouts 1.1
 import QtQuick.Controls 2.0
 import AppModel 1.0
 
-Window {
-    visible: true
-    flags: Qt.FramelessWindowHint
+ApplicationWindow {
     width: container.width * container.scale
     height: container.height * container.scale
 
@@ -33,7 +30,7 @@ Window {
         id: container
         anchors.centerIn: parent
         width: 1080
-        height: 1487
+        height: 1488
         scale: screenInfo.scale_factor()
 
         Image {
