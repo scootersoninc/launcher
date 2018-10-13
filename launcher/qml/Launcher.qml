@@ -69,9 +69,13 @@ ApplicationWindow {
             y: 264
             onPressAndHold: currentId = applicationModel.id(newIndex = index)
             onReleased: {
+                if(loc.index < 0) {
+                    return
+                }
                 if (currentId === '') {
                     pid = launcher.launch(applicationModel.id(loc.index))
                     if (1 < pid) {
+                        homescreenHandler.tapShortcut(applicationModel.name(loc.index))
                     }
                     else {
                         console.warn("app cannot be launched!")
@@ -79,7 +83,6 @@ ApplicationWindow {
                 } else {
                     currentId = ''
                 }
-                homescreenHandler.tapShortcut(applicationModel.name(loc.index))
             }
             onPositionChanged: {
                 if (loc.currentId === '') return
