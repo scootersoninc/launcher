@@ -75,7 +75,7 @@ ApplicationWindow {
                 if (currentId === '') {
                     pid = launcher.launch(applicationModel.id(loc.index))
                     if (1 < pid) {
-                        homescreenHandler.tapShortcut(applicationModel.name(loc.index))
+                        homescreenHandler.tapShortcut(applicationModel.appid(loc.index))
                     }
                     else {
                         console.warn("app cannot be launched!")
