@@ -123,9 +123,9 @@ int main(int argc, char *argv[])
 
     homescreenHandler->init(port, token.toStdString().c_str());
 
-    homescreenHandler->set_event_handler(QLibHomeScreen::Event_TapShortcut, [layoutHandler, myname](json_object *object){
-	qDebug("Surface %s got tapShortcut\n", myname);
-	layoutHandler->activateSurface(myname);
+    homescreenHandler->set_event_handler(QLibHomeScreen::Event_ShowWindow, [layoutHandler, myname](json_object *object){
+        qDebug("Surface %s got Event_ShowWindow\n", myname);
+        layoutHandler->activateWindow(myname);
     });
 
     QUrl bindingAddress;
