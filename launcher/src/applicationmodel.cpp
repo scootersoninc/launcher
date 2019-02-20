@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2016 The Qt Company Ltd.
  * Copyright (C) 2016, 2017 Mentor Graphics Development (Deutschland) GmbH
- * Copyright (c) 2018 TOYOTA MOTOR CORPORATION
+ * Copyright (c) 2018,2019 TOYOTA MOTOR CORPORATION
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,9 @@ class ApplicationModel::Private
 public:
     Private();
 
+    void addApp(QString icon, QString name, QString id);
+    void removeApp(QString id);
+
     QList<AppInfo> data;
 };
 
@@ -52,22 +55,33 @@ namespace {
 
 ApplicationModel::Private::Private()
 {
-    QString apps = afm_user_daemon_proxy->runnables(QStringLiteral(""));
-    QJsonDocument japps = QJsonDocument::fromJson(apps.toUtf8());
-    for (auto const &app : japps.array()) {
-        QJsonObject const &jso = app.toObject();
-        auto const name = jso["name"].toString();
-        auto const id = jso["id"].toString();
-        auto const icon = get_icon_name(jso);
+}
 
-        if ( name != "launcher" &&
-             name != "homescreen-2017" &&
-             name != "homescreen" &&
-             name != "OnScreenApp") {
-            this->data.append(AppInfo(icon, name, id));
-        }
+void ApplicationModel::Private::addApp(QString icon, QString name, QString id)
+{
+    HMI_DEBUG("addApp","name: %s icon: %s id: %s.", name.toStdString().c_str(), icon.toStdString().c_str(), id.toStdString().c_str());
+    for(int i = 0; i < this->data.size(); ++i) {
+        if(this->data[i].id() == id)
+            return;
+    }
 
-        HMI_DEBUG("launcher","name: %s icon: %s id: %s.", name.toStdString().c_str(), icon.toStdString().c_str(), id.toStdString().c_str());
+    QString _icon = name.toLower();
+    if ( !QFile::exists(QString(":/images/%1_active.svg").arg(_icon)) ||
+         !QFile::exists(QString(":/images/%1_inactive.svg").arg(_icon)) )
+    {
+        _icon = "blank";
+    }
+    this->data.append(AppInfo(_icon, name, id));
+}
+
+void ApplicationModel::Private::removeApp(QString id)
+{
+    HMI_DEBUG("removeApp","id: %s.",id.toStdString().c_str());
+    for (int i = 0; i < this->data.size(); ++i) {
+          if (this->data.at(i).id() == id) {
+              this->data.removeAt(i);
+              break;
+          }
     }
 }
 
@@ -159,4 +173,37 @@ void ApplicationModel::move(int from, int to)
     } else {
         HMI_NOTICE("launcher","from : %d, to : %d. false.", from, to);
     }
+}
+
+void ApplicationModel::updateApplist(QStringList info)
+{
+    QString icon = info.at(0);
+    QString name = info.at(1);
+    QString id = info.at(2);
+
+    beginResetModel();
+    if(icon == "") { // uninstall
+        d->removeApp(id);
+    }
+    else {
+        // new app
+        d->addApp(icon, name, id);
+    }
+    endResetModel();
+}
+
+void ApplicationModel::initAppList(QString data)
+{
+    HMI_DEBUG("launcher","init application list.");
+    beginResetModel();
+    QJsonDocument japps = QJsonDocument::fromJson(data.toUtf8());
+    for (auto const &app : japps.array()) {
+        QJsonObject const &jso = app.toObject();
+        auto const name = jso["name"].toString();
+        auto const id = jso["id"].toString();
+        auto const icon = get_icon_name(jso);
+
+        d->addApp(icon, name, id);
+    }
+    endResetModel();
 }
