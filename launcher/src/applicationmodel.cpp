@@ -71,7 +71,13 @@ void ApplicationModel::Private::addApp(QString icon, QString name, QString id)
     {
         _icon = "blank";
     }
-    this->data.append(AppInfo(_icon, name, id));
+
+    int pos = 0;
+    for (pos = 0; pos < this->data.size(); ++pos) {
+        if (QString::compare(this->data.at(pos).name(), name, Qt::CaseInsensitive) > 0)
+            break;
+    }
+    this->data.insert(pos, AppInfo(_icon, name, id));
 }
 
 void ApplicationModel::Private::removeApp(QString id)
