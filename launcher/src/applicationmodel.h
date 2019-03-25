@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2016 The Qt Company Ltd.
- * Copyright (c) 2018 TOYOTA MOTOR CORPORATION
+ * Copyright (c) 2018,2019 TOYOTA MOTOR CORPORATION
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,8 @@ public:
     Q_INVOKABLE QString id(int index) const;
     Q_INVOKABLE QString name(int index) const;
     Q_INVOKABLE void move(int from, int to);
+    Q_INVOKABLE void initAppList(QString data);
+    Q_INVOKABLE void updateApplist(QStringList info);
 
 private:
     class Private;
