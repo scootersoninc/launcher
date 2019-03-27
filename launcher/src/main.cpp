@@ -29,7 +29,7 @@
 #include "applicationmodel.h"
 #include "appinfo.h"
 #include "afm_user_daemon_proxy.h"
-#include "homescreenhandler.h"
+#include "qlibhomescreen.h"
 #include "hmi-debug.h"
 
 // XXX: We want this DBus connection to be shared across the different
@@ -93,6 +93,7 @@ int main(int argc, char *argv[])
     qDBusRegisterMetaType<AppInfo>();
     qDBusRegisterMetaType<QList<AppInfo> >();
 
+    QLibHomeScreen* homescreenHandler = new QLibHomeScreen();
     ApplicationLauncher *launcher = new ApplicationLauncher();
     QLibWindowmanager* layoutHandler = new QLibWindowmanager();
     if(layoutHandler->init(port,token) != 0){
@@ -120,8 +121,12 @@ int main(int argc, char *argv[])
         HMI_DEBUG("launch", "surface %s Event_Invisible", label);
     });
 
-    HomescreenHandler* homescreenHandler = new HomescreenHandler();
-    homescreenHandler->init(port, token.toStdString().c_str(), layoutHandler, myname);
+    homescreenHandler->init(port, token.toStdString().c_str());
+
+    homescreenHandler->set_event_handler(QLibHomeScreen::Event_ShowWindow, [layoutHandler, myname](json_object *object){
+        qDebug("Surface %s got Event_ShowWindow\n", myname);
+        layoutHandler->activateWindow(myname);
+    });
 
     QUrl bindingAddress;
     bindingAddress.setScheme(QStringLiteral("ws"));
@@ -150,7 +155,6 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty(QStringLiteral("launcher"), launcher);
     engine.rootContext()->setContextProperty(QStringLiteral("screenInfo"), &screenInfo);
     engine.load(QUrl(QStringLiteral("qrc:/Launcher.qml")));
-    homescreenHandler->getRunnables();
 
     QObject *root = engine.rootObjects().first();
     QQuickWindow *window = qobject_cast<QQuickWindow *>(root);
