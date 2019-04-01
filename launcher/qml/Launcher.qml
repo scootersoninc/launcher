@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2016 The Qt Company Ltd.
  * Copyright (C) 2016, 2017 Mentor Graphics Development (Deutschland) GmbH
- * Copyright (c) 2018 TOYOTA MOTOR CORPORATION
+ * Copyright (c) 2018,2019 TOYOTA MOTOR CORPORATION
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,6 +59,21 @@ ApplicationWindow {
             height: grid.cellHeight
         }
 
+        Connections {
+            target: homescreenHandler
+            onAppListUpdate: {
+                console.warn("applist update in Launcher.qml")
+                applicationModel.updateApplist(info);
+            }
+        }
+        Connections {
+            target: homescreenHandler
+            onInitAppList: {
+                console.warn("applist init in Launcher.qml")
+                applicationModel.initAppList(data);
+            }
+        }
+
         MouseArea {
             id: loc
             anchors.fill: parent
@@ -73,13 +88,7 @@ ApplicationWindow {
                     return
                 }
                 if (currentId === '') {
-                    pid = launcher.launch(applicationModel.id(loc.index))
-                    if (1 < pid) {
-                        homescreenHandler.tapShortcut(applicationModel.appid(loc.index))
-                    }
-                    else {
-                        console.warn("app cannot be launched!")
-                    }
+                    homescreenHandler.tapShortcut(applicationModel.appid(loc.index))
                 } else {
                     currentId = ''
                 }

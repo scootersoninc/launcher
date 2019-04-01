@@ -1,5 +1,5 @@
 # Copyright (C) 2016, 2017 Mentor Graphics Development (Deutschland) GmbH
-# Copyright (c) 2018 TOYOTA MOTOR CORPORATION
+# Copyright (c) 2018,2019 TOYOTA MOTOR CORPORATION
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ TARGET = launcher
 QT = qml quick dbus websockets
 CONFIG += c++11 link_pkgconfig
 DESTDIR = $${OUT_PWD}/../package/root/bin
-PKGCONFIG += qlibwindowmanager qlibhomescreen
+PKGCONFIG += qlibwindowmanager libhomescreen
 
 include(../interfaces/interfaces.pri)
 
@@ -26,12 +26,14 @@ SOURCES += \
     src/main.cpp \
     src/applicationmodel.cpp \
     src/appinfo.cpp \
-    src/applicationlauncher.cpp
+    src/applicationlauncher.cpp \
+    src/homescreenhandler.cpp
 
 HEADERS  += \
     src/applicationlauncher.h \
     src/applicationmodel.h \
-    src/appinfo.h
+    src/appinfo.h \
+    src/homescreenhandler.h
 
 OTHER_FILES += \
     README.md
