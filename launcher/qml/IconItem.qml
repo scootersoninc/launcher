@@ -97,7 +97,7 @@ Item {
         states: [
             State {
                 name: 'active'
-                when: loc.currentId == model.id
+                when: loc.currentId === model.id
                 PropertyChanges {
                     target: container
                     x: loc.mouseX - width/2
