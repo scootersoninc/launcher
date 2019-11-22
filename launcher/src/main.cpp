@@ -45,10 +45,6 @@ struct Cleanup {
     }
 };
 
-void noOutput(QtMsgType, const QMessageLogContext &, const QString &)
-{
-}
-
 }
 
 int main(int argc, char *argv[])
