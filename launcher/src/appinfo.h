@@ -19,8 +19,8 @@
 #ifndef APPINFO_H
 #define APPINFO_H
 
+#include <QObject>
 #include <QtCore/QSharedDataPointer>
-#include <QtDBus/QDBusArgument>
 
 class AppInfo
 {
@@ -53,9 +53,6 @@ public:
     QString iconPath() const;
 
     void read(const QJsonObject &json);
-
-    friend QDBusArgument &operator <<(QDBusArgument &argument, const AppInfo &appInfo);
-    friend const QDBusArgument &operator >>(const QDBusArgument &argument, AppInfo &appInfo);
 
 private:
     class Private;

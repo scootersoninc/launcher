@@ -19,14 +19,12 @@
 #include "applicationmodel.h"
 #include "appinfo.h"
 
+#include <QtCore/QFile>
+#include <QtCore/QJsonObject>
+#include <QtCore/QJsonDocument>
+#include <QtCore/QJsonArray>
+
 #include "hmi-debug.h"
-
-#include <QtDBus/QDBusInterface>
-#include <QtDBus/QDBusReply>
-
-#include "afm_user_daemon_proxy.h"
-
-extern org::AGL::afm::user *afm_user_daemon_proxy;
 
 class ApplicationModel::Private
 {

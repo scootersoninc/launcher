@@ -16,9 +16,8 @@ TEMPLATE = subdirs
 
 load(configure)
 
-SUBDIRS = interfaces \
+SUBDIRS = \
     launcher \
     package
 
-launcher.depends = interfaces
 package.depends += launcher

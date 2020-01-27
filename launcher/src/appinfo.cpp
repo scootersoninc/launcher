@@ -142,36 +142,3 @@ void AppInfo::read(const QJsonObject &json)
     d->author = json["author"].toString();
     d->iconPath = json["iconPath"].toString();
 }
-
-QDBusArgument &operator <<(QDBusArgument &argument, const AppInfo &appInfo)
-{
-    argument.beginStructure();
-    argument << appInfo.d->id;
-    argument << appInfo.d->version;
-    argument << appInfo.d->width;
-    argument << appInfo.d->height;
-    argument << appInfo.d->name;
-    argument << appInfo.d->description;
-    argument << appInfo.d->shortname;
-    argument << appInfo.d->author;
-    argument << appInfo.d->iconPath;
-    argument.endStructure();
-
-    return argument;
-}
-
-const QDBusArgument &operator >>(const QDBusArgument &argument, AppInfo &appInfo)
-{
-    argument.beginStructure();
-    argument >> appInfo.d->id;
-    argument >> appInfo.d->version;
-    argument >> appInfo.d->width;
-    argument >> appInfo.d->height;
-    argument >> appInfo.d->name;
-    argument >> appInfo.d->description;
-    argument >> appInfo.d->shortname;
-    argument >> appInfo.d->author;
-    argument >> appInfo.d->iconPath;
-    argument.endStructure();
-    return argument;
-}

@@ -17,6 +17,7 @@
 
 #include <QGuiApplication>
 #include <QCommandLineParser>
+#include <QtCore/QUrlQuery>
 #include <QtGui/QGuiApplication>
 #include <QtQml/QQmlApplicationEngine>
 #include <QtQml/QQmlContext>
@@ -25,39 +26,15 @@
 #include <QThread>
 
 #include <qlibwindowmanager.h>
-#include "applicationlauncher.h"
 #include "applicationmodel.h"
 #include "appinfo.h"
-#include "afm_user_daemon_proxy.h"
 #include "homescreenhandler.h"
 #include "hmi-debug.h"
-
-// XXX: We want this DBus connection to be shared across the different
-// QML objects, is there another way to do this, a nice way, perhaps?
-org::AGL::afm::user *afm_user_daemon_proxy;
-
-namespace {
-
-struct Cleanup {
-    static inline void cleanup(org::AGL::afm::user *p) {
-        delete p;
-        afm_user_daemon_proxy = Q_NULLPTR;
-    }
-};
-
-}
 
 int main(int argc, char *argv[])
 {
     QString myname = QString("launcher");
     QGuiApplication a(argc, argv);
-
-    // use launch process
-    QScopedPointer<org::AGL::afm::user, Cleanup> afm_user_daemon_proxy(new org::AGL::afm::user("org.AGL.afm.user",
-                                                                                               "/org/AGL/afm/user",
-                                                                                               QDBusConnection::sessionBus(),
-                                                                                               0));
-    ::afm_user_daemon_proxy = afm_user_daemon_proxy.data();
 
     QCoreApplication::setOrganizationDomain("LinuxFoundation");
     QCoreApplication::setOrganizationName("AutomotiveGradeLinux");
@@ -85,11 +62,6 @@ int main(int argc, char *argv[])
     // import C++ class to QML
     qmlRegisterType<ApplicationModel>("AppModel", 1, 0, "ApplicationModel");
 
-    // DBus
-    qDBusRegisterMetaType<AppInfo>();
-    qDBusRegisterMetaType<QList<AppInfo> >();
-
-    ApplicationLauncher *launcher = new ApplicationLauncher();
     QLibWindowmanager* layoutHandler = new QLibWindowmanager();
     if(layoutHandler->init(port,token) != 0){
         exit(EXIT_FAILURE);
@@ -103,17 +75,6 @@ int main(int argc, char *argv[])
 
     layoutHandler->set_event_handler(QLibWindowmanager::Event_SyncDraw, [layoutHandler, myname](json_object *object) {
         layoutHandler->endDraw(myname);
-    });
-
-    layoutHandler->set_event_handler(QLibWindowmanager::Event_Visible, [layoutHandler, launcher](json_object *object) {
-        QString label = QString(json_object_get_string(	json_object_object_get(object, "drawing_name") ));
-        qDebug() << label;
-        QMetaObject::invokeMethod(launcher, "setCurrent", Qt::QueuedConnection, Q_ARG(QString, label == "HomeScreen" ? "Home" : label));
-    });
-
-    layoutHandler->set_event_handler(QLibWindowmanager::Event_Invisible, [layoutHandler, launcher](json_object *object) {
-        const char* label = json_object_get_string(	json_object_object_get(object, "drawing_name") );
-        HMI_DEBUG("launch", "surface %s Event_Invisible", label);
     });
 
     HomescreenHandler* homescreenHandler = new HomescreenHandler();
@@ -143,7 +104,6 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty(QStringLiteral("layoutHandler"), layoutHandler);
     engine.rootContext()->setContextProperty(QStringLiteral("homescreenHandler"), homescreenHandler);
-    engine.rootContext()->setContextProperty(QStringLiteral("launcher"), launcher);
     engine.rootContext()->setContextProperty(QStringLiteral("screenInfo"), &screenInfo);
     engine.load(QUrl(QStringLiteral("qrc:/Launcher.qml")));
     homescreenHandler->getRunnables();
