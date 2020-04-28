@@ -20,36 +20,95 @@
 #include <functional>
 #include "hmi-debug.h"
 
+#include <QGuiApplication>
+#include <wayland-client.h>
+#include <qpa/qplatformnativeinterface.h>
+
+#include "shell-desktop.h"
+
 void* HomescreenHandler::myThis = 0;
 
-HomescreenHandler::HomescreenHandler(QObject *parent) :
-    QObject(parent),
-    mp_hs(NULL)
+static struct wl_output *
+getWlOutput(QPlatformNativeInterface *native, QScreen *screen)
 {
+	void *output = native->nativeResourceForScreen("output", screen);
+	return static_cast<struct ::wl_output*>(output);
+}
 
+static void
+global_add(void *data, struct wl_registry *reg, uint32_t name,
+	   const char *interface, uint32_t version)
+{
+	struct agl_shell_desktop **shell =
+		static_cast<struct agl_shell_desktop **>(data);
+
+	if (strcmp(interface, agl_shell_desktop_interface.name) == 0) {
+		*shell = static_cast<struct agl_shell_desktop *>(
+			wl_registry_bind(reg, name, &agl_shell_desktop_interface, version)
+		);
+	}
+}
+
+static void
+global_remove(void *data, struct wl_registry *reg, uint32_t id)
+{
+	(void) data;
+	(void) reg;
+	(void) id;
+}
+
+static const struct wl_registry_listener registry_listener = {
+	global_add,
+	global_remove,
+};
+
+
+static struct agl_shell_desktop *
+register_agl_shell_desktop(void)
+{
+	struct wl_display *wl;
+	struct wl_registry *registry;
+	struct agl_shell_desktop *shell = nullptr;
+
+	QPlatformNativeInterface *native = qApp->platformNativeInterface();
+
+	wl = static_cast<struct wl_display *>(native->nativeResourceForIntegration("display"));
+	registry = wl_display_get_registry(wl);
+
+	wl_registry_add_listener(registry, &registry_listener, &shell);
+	// Roundtrip to get all globals advertised by the compositor
+	wl_display_roundtrip(wl);
+	wl_registry_destroy(registry);
+
+	return shell;
+}
+
+HomescreenHandler::HomescreenHandler(QObject *parent) : QObject(parent)
+{
 }
 
 HomescreenHandler::~HomescreenHandler()
 {
-    if (mp_hs != NULL) {
-        delete mp_hs;
-    }
 }
 
-void HomescreenHandler::init(int port, const char *token, QLibWindowmanager *qwm, QString myname)
+void HomescreenHandler::init(int port, const char *token, QString myname)
 {
     myThis = this;
-    mp_qwm = qwm;
     m_myname = myname;
 
     mp_hs = new LibHomeScreen();
     mp_hs->init(port, token);
     mp_hs->registerCallback(nullptr, HomescreenHandler::onRep_static);
 
-    mp_hs->set_event_handler(LibHomeScreen::Event_ShowWindow,[this](json_object *object){
-        HMI_DEBUG("Launcher","Surface launcher got Event_ShowWindow\n");
-        mp_qwm->activateWindow(m_myname);
-    });
+    struct agl_shell_desktop *agl_shell = register_agl_shell_desktop();
+    if (!agl_shell) {
+	    fprintf(stderr, "agl_shell extension is not advertised. "
+			    "Are you sure that agl-compositor is running?\n");
+	    exit(EXIT_FAILURE);
+    }
+
+    std::shared_ptr<struct agl_shell_desktop> shell{agl_shell, agl_shell_desktop_destroy};
+    this->aglShell = new Shell(shell, nullptr);
 
     mp_hs->set_event_handler(LibHomeScreen::Event_AppListChanged,[this](json_object *object){
         HMI_DEBUG("Launcher","laucher: appListChanged [%s]\n", json_object_to_json_string(object));
@@ -115,13 +174,14 @@ void HomescreenHandler::init(int port, const char *token, QLibWindowmanager *qwm
 
 void HomescreenHandler::tapShortcut(QString application_id)
 {
-    HMI_DEBUG("Launcher","tapShortcut %s", application_id.toStdString().c_str());
-    struct json_object* j_json = json_object_new_object();
-    struct json_object* value;
-    value = json_object_new_string("normal.full");
-    json_object_object_add(j_json, "area", value);
+	HMI_DEBUG("Launcher","tapShortcut %s", application_id.toStdString().c_str());
+	struct json_object* j_json = json_object_new_object();
+	struct json_object* value;
+	value = json_object_new_string("normal.full");
+	json_object_object_add(j_json, "area", value);
 
-    mp_hs->showWindow(application_id.toStdString().c_str(), j_json);
+	mp_hs->showWindow(application_id.toStdString().c_str(), j_json);
+	aglShell->activate_app(nullptr, application_id, nullptr);
 }
 
 void HomescreenHandler::onRep_static(struct json_object* reply_contents)

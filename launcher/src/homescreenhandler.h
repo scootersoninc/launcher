@@ -21,7 +21,8 @@
 #include <QObject>
 #include <libhomescreen.hpp>
 #include <string>
-#include <qlibwindowmanager.h>
+
+#include "shell-desktop.h"
 
 using namespace std;
 
@@ -32,7 +33,7 @@ public:
     explicit HomescreenHandler(QObject *parent = 0);
     ~HomescreenHandler();
 
-    void init(int port, const char* token, QLibWindowmanager *qwm, QString myname);
+    void init(int port, const char* token, QString myname);
 
     Q_INVOKABLE void tapShortcut(QString application_id);
     Q_INVOKABLE void getRunnables(void);
@@ -48,7 +49,7 @@ signals:
 
 private:
     LibHomeScreen *mp_hs;
-    QLibWindowmanager *mp_qwm;
+    Shell *aglShell;
     QString m_myname;
 };
 
