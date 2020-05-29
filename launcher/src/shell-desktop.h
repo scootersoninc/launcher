@@ -56,6 +56,9 @@ public:
 
 public slots: // calls out of qml into CPP
 	void activate_app(QWindow *win, const QString &app_id, const QString &app_data);
+	void activate_app_by_screen(const QString &screen_name,
+				    const QString &app_id,
+				    const QString &app_data);
 	void deactivate_app(const QString &app_id);
 	void set_window_props(QWindow *win, const QString &app_id,
 			      uint32_t props, int x, int y);

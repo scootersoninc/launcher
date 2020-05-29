@@ -172,7 +172,7 @@ void HomescreenHandler::init(int port, const char *token, QString myname)
     });
 }
 
-void HomescreenHandler::tapShortcut(QString application_id)
+void HomescreenHandler::tapShortcut(QString application_id, QString output_name)
 {
 	HMI_DEBUG("Launcher","tapShortcut %s", application_id.toStdString().c_str());
 	struct json_object* j_json = json_object_new_object();
@@ -181,7 +181,10 @@ void HomescreenHandler::tapShortcut(QString application_id)
 	json_object_object_add(j_json, "area", value);
 
 	mp_hs->showWindow(application_id.toStdString().c_str(), j_json);
-	aglShell->activate_app(nullptr, application_id, nullptr);
+	if (output_name.isEmpty())
+		aglShell->activate_app(nullptr, application_id, nullptr);
+	else
+		aglShell->activate_app_by_screen(output_name, application_id, nullptr);
 }
 
 void HomescreenHandler::onRep_static(struct json_object* reply_contents)

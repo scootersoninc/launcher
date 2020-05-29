@@ -35,7 +35,7 @@ public:
 
     void init(int port, const char* token, QString myname);
 
-    Q_INVOKABLE void tapShortcut(QString application_id);
+    Q_INVOKABLE void tapShortcut(QString application_id, QString output_name);
     Q_INVOKABLE void getRunnables(void);
 
     void onRep(struct json_object* reply_contents);

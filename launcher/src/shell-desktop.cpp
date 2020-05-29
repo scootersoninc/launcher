@@ -52,6 +52,31 @@ Shell::activate_app(QWindow *win, const QString &app_id,
 }
 
 void
+Shell::activate_app_by_screen(const QString &screen_name, const QString &app_id,
+			      const QString &app_data)
+{
+	QScreen *qscreen_to_put = nullptr;
+	for (auto &ss: qApp->screens()) {
+		if (ss->name() == screen_name) {
+			qscreen_to_put = ss;
+			break;
+		}
+	}
+
+	/* use the primary one */
+	if (!qscreen_to_put) {
+		qscreen_to_put = qApp->screens().first();
+	}
+
+	struct wl_output *output = getWlOutput(qscreen_to_put);
+	qDebug() << "will activate app: " << app_id << " on output " <<
+		qscreen_to_put->name();
+	agl_shell_desktop_activate_app(this->shell.get(),
+				       app_id.toStdString().c_str(),
+				       app_data.toStdString().c_str(), output);
+}
+
+void
 Shell::deactivate_app(const QString &app_id)
 {
 	agl_shell_desktop_deactivate_app(this->shell.get(), 
