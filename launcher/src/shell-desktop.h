@@ -69,18 +69,21 @@ static void
 application_id_event(void *data, struct agl_shell_desktop *agl_shell_desktop,
 		     const char *app_id)
 {
-        Shell *aglShell = static_cast<Shell *>(data);
-        (void) agl_shell_desktop;
+	Shell *aglShell = static_cast<Shell *>(data);
+	(void) agl_shell_desktop;
 
-        qInfo() << "app_id: " << app_id;
+	qInfo() << "app_id: " << app_id;
 
 	// this ain't necessary in case the default policy API will activate
 	// applications by default (when they are started) but if that is not
 	// the case we can use this event handler to activate the application
-	// as this event is sent when the application is created (when the
-	// app surface is created that is)
-	QString qstr_app_id = QString::fromUtf8(app_id, -1);
-	aglShell->activate_app(nullptr, qstr_app_id, nullptr);
+	// as this event is sent when the application is created (when the app
+	// surface is created that is); note this event is sent when launcher
+	// binds to the interface for each application present, besides being
+	// adevertised when the application surface is created; so the
+	// following will need some kind of filtering to avoid mass activation
+	//QString qstr_app_id = QString::fromUtf8(app_id, -1);
+	//aglShell->activate_app(nullptr, qstr_app_id, nullptr);
 }
 
 static void
