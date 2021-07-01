@@ -44,5 +44,6 @@ RESOURCES += \
     qml/images/images.qrc \
     qml/qml.qrc
 
+AGL_SHELL_DESKTOP_PATH = $$system(pkg-config --variable=pkgdatadir agl-compositor-0.0.19-protocols)
 WAYLANDCLIENTSOURCES += \
-    protocol/agl-shell-desktop.xml
+    $$AGL_SHELL_DESKTOP_PATH/agl-shell-desktop.xml
