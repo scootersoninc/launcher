@@ -25,6 +25,8 @@
 
 #include <json.h>
 
+#include "applaunch_interface.h"
+
 using namespace std;
 
 class HomescreenHandler : public QObject
@@ -34,7 +36,7 @@ public:
     explicit HomescreenHandler(QObject *parent = 0);
     ~HomescreenHandler();
 
-    Q_INVOKABLE void tapShortcut(QString application_id, QString output_name);
+    Q_INVOKABLE void tapShortcut(QString application_id);
     Q_INVOKABLE void getRunnables(void);
 
     void onRep(struct json_object* reply_contents);
@@ -42,6 +44,9 @@ public:
 signals:
     void initAppList(QString data);
     void appListUpdate(QStringList info);
+
+private:
+    org::automotivelinux::AppLaunch *applaunch_iface;
 };
 
 #endif // HOMESCREENHANDLER_H

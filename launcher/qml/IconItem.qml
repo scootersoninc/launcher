@@ -39,7 +39,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             width: 220
             height: width
-            source: './images/%1_%2.svg'.arg(model.icon).arg(loc.pressed && (loc.index === model.index || loc.currentId === model.id) ? 'active' : 'inactive')
+            source: main.icon
             antialiasing: item.state !== ''
 
             property string initial: model.name.substring(0,1).toUpperCase()

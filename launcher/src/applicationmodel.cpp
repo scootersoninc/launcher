@@ -40,13 +40,10 @@ public:
 namespace {
     QString get_icon_name(QJsonObject const &i)
     {
-        QString icon = i["name"].toString().toLower();
-
-        if ( !QFile::exists(QString(":/images/%1_active.svg").arg(icon)) ||
-             !QFile::exists(QString(":/images/%1_inactive.svg").arg(icon)) )
-        {
+        QString icon = i["icon"].toString();
+        fprintf(stderr, "Looking for icon %s\n", icon.toLocal8Bit().data());
+        if ( !QFile::exists(icon) )
             icon = "blank";
-        }
         return icon;
     }
 }
@@ -63,9 +60,13 @@ void ApplicationModel::Private::addApp(QString icon, QString name, QString id)
             return;
     }
 
-    QString _icon = name.toLower();
-    if ( !QFile::exists(QString(":/images/%1_active.svg").arg(_icon)) ||
-         !QFile::exists(QString(":/images/%1_inactive.svg").arg(_icon)) )
+    QString _icon;
+    if ( QFile::exists(icon) )
+    {
+        _icon = QString("file:%1").arg(icon);
+        fprintf(stderr, "using icon '%s'\n", _icon.toLocal8Bit().data());
+    }
+    else
     {
         _icon = "blank";
     }

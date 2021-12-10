@@ -15,7 +15,7 @@
 
 TEMPLATE = app
 TARGET = launcher
-QT = qml quick gui-private
+QT = qml quick gui-private dbus
 CONFIG += c++11 link_pkgconfig
 DESTDIR = $${OUT_PWD}
 PKGCONFIG += json-c
@@ -23,6 +23,8 @@ PKGCONFIG += json-c
 CONFIG(release, debug|release) {
     QMAKE_POST_LINK = $(STRIP) --strip-unneeded $(TARGET)
 }
+
+DBUS_INTERFACES = $$[QT_SYSROOT]/usr/share/dbus-1/interfaces/org.automotivelinux.AppLaunch.xml
 
 SOURCES += \
     src/main.cpp \

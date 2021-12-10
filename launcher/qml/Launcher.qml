@@ -82,7 +82,6 @@ ApplicationWindow {
             property string currentId: ''
             property int newIndex: -1
             property int index: grid.indexAt(loc.mouseX, loc.mouseY)
-	    property string output_screen: ''
             x: 62
             y: 264
             onPressAndHold: currentId = applicationModel.id(newIndex = index)
@@ -96,7 +95,7 @@ ApplicationWindow {
 		//	output_screen = 'Virtual-1'
 		//}
                 if (currentId === '') {
-                    homescreenHandler.tapShortcut(applicationModel.appid(loc.index), output_screen)
+                    homescreenHandler.tapShortcut(applicationModel.appid(loc.index))
                 } else {
                     currentId = ''
                 }
