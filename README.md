@@ -1,34 +1,11 @@
-**Install SDK**
+AGL Launcher graphical application
 
-Install sdk following this URL from AGL website.
-```
-http://docs.automotivelinux.org/docs/getting_started/en/dev/reference/setup-sdk-environment.html
-```
+`launcher` is a simple graphical application launchern.
 
-**Download source code**
+AGL repo for source code:
+https://gerrit.automotivelinux.org/gerrit/#/admin/projects/apps/launcher
 
-Download launcher source code from AGL gerrit.
+You can also clone the source repository by running the following command:
 ```
 $ git clone https://gerrit.automotivelinux.org/gerrit/apps/launcher
 ```
-
-**Build launcher application**
-
-Source SDK envirment and make.
-```
-$ source /xdt/sdk/environment-setup-<your_target>
-$ cd launcher
-$ mkdir build
-$ cd build
-$ qmake ..
-$ make
-```
-**Install launcher wgt**
-
-```
-$ scp package/launcher.wgt root@<your_target_ip>
-$ ssh root@<your_target_ip>
-$ afm-util install launcher
-```
-
-Reboot target board and launcher application will start by default.

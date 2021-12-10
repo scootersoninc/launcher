@@ -28,55 +28,19 @@
 #include "applicationmodel.h"
 #include "appinfo.h"
 #include "homescreenhandler.h"
-#include "hmi-debug.h"
-#include "shell-desktop.h"
 
 int main(int argc, char *argv[])
 {
     QString myname = QString("launcher");
     QGuiApplication a(argc, argv);
 
-    //QCoreApplication::setOrganizationDomain("LinuxFoundation");
-    //QCoreApplication::setOrganizationName("AutomotiveGradeLinux");
-    //QCoreApplication::setApplicationName(myname);
-    //QCoreApplication::setApplicationVersion("0.1.0");
-
     // necessary to identify correctly by app_id
     a.setDesktopFileName(myname);
-
-    QCommandLineParser parser;
-    parser.addPositionalArgument("port", a.translate("main", "port for binding"));
-    parser.addPositionalArgument("secret", a.translate("main", "secret for binding"));
-    parser.addHelpOption();
-    parser.addVersionOption();
-    parser.process(a);
-    QStringList positionalArguments = parser.positionalArguments();
-
-    int port = 1700;
-    QString token = "wm";
-
-    if (positionalArguments.length() == 2) {
-        port = positionalArguments.takeFirst().toInt();
-        token = positionalArguments.takeFirst();
-    }
-
-    HMI_DEBUG("launcher","port = %d, token = %s", port, token.toStdString().c_str());
 
     // import C++ class to QML
     qmlRegisterType<ApplicationModel>("AppModel", 1, 0, "ApplicationModel");
 
     HomescreenHandler* homescreenHandler = new HomescreenHandler();
-    homescreenHandler->init(port, token.toStdString().c_str(), myname);
-
-    QUrl bindingAddress;
-    bindingAddress.setScheme(QStringLiteral("ws"));
-    bindingAddress.setHost(QStringLiteral("localhost"));
-    bindingAddress.setPort(port);
-    bindingAddress.setPath(QStringLiteral("/api"));
-
-    QUrlQuery query;
-    query.addQueryItem(QStringLiteral("token"), token);
-    bindingAddress.setQuery(query);
 
     // mail.qml loading
     QQmlApplicationEngine engine;

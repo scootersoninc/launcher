@@ -26,13 +26,7 @@ class AppInfo
 {
     Q_GADGET
     Q_PROPERTY(QString id READ id)
-    Q_PROPERTY(QString version READ version)
-    Q_PROPERTY(int width READ width)
-    Q_PROPERTY(int height READ height)
     Q_PROPERTY(QString name READ name)
-    Q_PROPERTY(QString description READ description)
-    Q_PROPERTY(QString shortname READ shortname)
-    Q_PROPERTY(QString author READ author)
     Q_PROPERTY(QString iconPath READ iconPath)
 public:
     AppInfo();
@@ -43,13 +37,7 @@ public:
     void swap(AppInfo &other) { qSwap(d, other.d); }
 
     QString id() const;
-    QString version() const;
-    int width() const;
-    int height() const;
     QString name() const;
-    QString description() const;
-    QString shortname() const;
-    QString author() const;
     QString iconPath() const;
 
     void read(const QJsonObject &json);

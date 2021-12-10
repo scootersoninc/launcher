@@ -19,10 +19,11 @@
 #define HOMESCREENHANDLER_H
 
 #include <QObject>
-#include <libhomescreen.hpp>
+#include <QString>
+#include <QStringList>
 #include <string>
 
-#include "shell-desktop.h"
+#include <json.h>
 
 using namespace std;
 
@@ -33,24 +34,14 @@ public:
     explicit HomescreenHandler(QObject *parent = 0);
     ~HomescreenHandler();
 
-    void init(int port, const char* token, QString myname);
-
     Q_INVOKABLE void tapShortcut(QString application_id, QString output_name);
     Q_INVOKABLE void getRunnables(void);
 
     void onRep(struct json_object* reply_contents);
 
-    static void* myThis;
-    static void onRep_static(struct json_object* reply_contents);
-
 signals:
     void initAppList(QString data);
     void appListUpdate(QStringList info);
-
-private:
-    LibHomeScreen *mp_hs;
-    Shell *aglShell;
-    QString m_myname;
 };
 
 #endif // HOMESCREENHANDLER_H

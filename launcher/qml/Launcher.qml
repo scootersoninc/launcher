@@ -22,18 +22,18 @@ import QtQuick.Window 2.13
 import AppModel 1.0
 
 ApplicationWindow {
-    width: container.width * container.scale
-    height: container.height * container.scale
 
-    property int pid: -1
+    id: root 
+    //width: container.width
+    //height: container.height
+    flags: Qt.FramelessWindowHint
+    visible: true
 
     Item {
         id: container
         anchors.centerIn: parent
         width: Window.width
         height: Window.height
-        //scale: screenInfo.scale_factor()
-        scale: 1
 
         Image {
           anchors.centerIn: parent

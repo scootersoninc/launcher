@@ -15,10 +15,10 @@
 
 TEMPLATE = app
 TARGET = launcher
-QT = qml quick websockets gui-private
-CONFIG += c++11 link_pkgconfig wayland-scanner
-DESTDIR = $${OUT_PWD}/../package/root/bin
-PKGCONFIG += libhomescreen wayland-client
+QT = qml quick gui-private
+CONFIG += c++11 link_pkgconfig
+DESTDIR = $${OUT_PWD}
+PKGCONFIG += json-c
 
 CONFIG(release, debug|release) {
     QMAKE_POST_LINK = $(STRIP) --strip-unneeded $(TARGET)
@@ -28,13 +28,11 @@ SOURCES += \
     src/main.cpp \
     src/applicationmodel.cpp \
     src/appinfo.cpp \
-    src/shell-desktop.cpp \
     src/homescreenhandler.cpp
 
 HEADERS  += \
     src/applicationmodel.h \
     src/appinfo.h \
-    src/shell-desktop.h \
     src/homescreenhandler.h
 
 OTHER_FILES += \
@@ -44,6 +42,8 @@ RESOURCES += \
     qml/images/images.qrc \
     qml/qml.qrc
 
-AGL_SHELL_DESKTOP_PATH = $$system(pkg-config --variable=pkgdatadir agl-compositor-0.0.19-protocols)
-WAYLANDCLIENTSOURCES += \
-    $$AGL_SHELL_DESKTOP_PATH/agl-shell-desktop.xml
+target.path = $${PREFIX}/usr/bin
+target.files += $${OUT_PWD}/$${TARGET}
+target.CONFIG = no_check_exist executable
+
+INSTALLS += target

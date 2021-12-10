@@ -16,8 +16,5 @@ TEMPLATE = subdirs
 
 load(configure)
 
-SUBDIRS = \
-    launcher \
-    package
+SUBDIRS = launcher
 
-package.depends += launcher

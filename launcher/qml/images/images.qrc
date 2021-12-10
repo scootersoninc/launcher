@@ -1,35 +1,5 @@
 <RCC>
     <qresource prefix="/images">
         <file>AGL_HMI_Blue_Background_Car-01.png</file>
-        <file>connectivity_active.svg</file>
-        <file>connectivity_inactive.svg</file>
-        <file>dashboard_active.svg</file>
-        <file>dashboard_inactive.svg</file>
-        <file>hvac_active.svg</file>
-        <file>hvac_inactive.svg</file>
-        <file>mixer_active.svg</file>
-        <file>mixer_inactive.svg</file>
-        <file>mediaplayer_active.svg</file>
-        <file>mediaplayer_inactive.svg</file>
-        <file>music_active.svg</file>
-        <file>music_inactive.svg</file>
-        <file>navigation_active.svg</file>
-        <file>navigation_inactive.svg</file>
-        <file>phone_active.svg</file>
-        <file>phone_inactive.svg</file>
-        <file>poi_active.svg</file>
-        <file>poi_inactive.svg</file>
-        <file>radio_active.svg</file>
-        <file>radio_inactive.svg</file>
-        <file>settings_active.svg</file>
-        <file>settings_inactive.svg</file>
-        <file>video_active.svg</file>
-        <file>video_inactive.svg</file>
-        <file>webbrowser_active.svg</file>
-        <file>webbrowser_inactive.svg</file>
-        <file>blank_active.svg</file>
-        <file>blank_inactive.svg</file>
-        <file>plus_active.svg</file>
-        <file>plus_inactive.svg</file>
     </qresource>
 </RCC>

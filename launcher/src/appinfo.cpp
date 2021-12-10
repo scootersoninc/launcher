@@ -27,32 +27,18 @@ public:
     Private(const Private &other);
 
     QString id;
-    QString version;
-    int width;
-    int height;
     QString name;
-    QString description;
-    QString shortname;
-    QString author;
     QString iconPath;
 };
 
 AppInfo::Private::Private()
-    : width(-1)
-    , height(-1)
 {
 }
 
 AppInfo::Private::Private(const Private &other)
     : QSharedData(other)
     , id(other.id)
-    , version(other.version)
-    , width(other.width)
-    , height(other.height)
     , name(other.name)
-    , description(other.description)
-    , shortname(other.shortname)
-    , author(other.author)
     , iconPath(other.iconPath)
 {
 }
@@ -90,39 +76,9 @@ QString AppInfo::id() const
     return d->id;
 }
 
-QString AppInfo::version() const
-{
-    return d->version;
-}
-
-int AppInfo::width() const
-{
-    return d->width;
-}
-
-int AppInfo::height() const
-{
-    return d->height;
-}
-
 QString AppInfo::name() const
 {
     return d->name;
-}
-
-QString AppInfo::description() const
-{
-    return d->description;
-}
-
-QString AppInfo::shortname() const
-{
-    return d->shortname;
-}
-
-QString AppInfo::author() const
-{
-    return d->author;
 }
 
 QString AppInfo::iconPath() const
@@ -133,12 +89,6 @@ QString AppInfo::iconPath() const
 void AppInfo::read(const QJsonObject &json)
 {
     d->id = json["id"].toString();
-    d->version = json["version"].toString();
-    d->width = json["width"].toInt();
-    d->height = json["height"].toInt();
     d->name = json["name"].toString();
-    d->description = json["description"].toString();
-    d->shortname = json["shortname"].toString();
-    d->author = json["author"].toString();
     d->iconPath = json["iconPath"].toString();
 }
