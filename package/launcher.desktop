@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Name=Launcher
+Comment=Launcher
+GenericName=Launcher
+Exec=launcher
+Icon=launcher
+Terminal=true
+Type=Application
+Categories=System;
+StartupNotify=true

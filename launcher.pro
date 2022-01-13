@@ -16,5 +16,5 @@ TEMPLATE = subdirs
 
 load(configure)
 
-SUBDIRS = launcher
+SUBDIRS = launcher package
 
