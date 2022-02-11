@@ -38,6 +38,7 @@ public:
 
     Q_INVOKABLE void tapShortcut(QString application_id);
     Q_INVOKABLE void getRunnables(void);
+    int getRunnablesCount(void);
 
     void onRep(struct json_object* reply_contents);
 

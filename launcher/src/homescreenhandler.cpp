@@ -47,10 +47,30 @@ void HomescreenHandler::tapShortcut(QString application_id)
     }
 }
 
+int HomescreenHandler::getRunnablesCount(void)
+{
+    int apps = 0;
+
+    QDBusPendingReply<QVariantList> reply = applaunch_iface->listApplications(true);
+    reply.waitForFinished();
+
+    if (reply.isError()) {
+        HMI_ERROR("Launcher","Unable to retrieve application list: %s",
+                  reply.error().message().toStdString().c_str());
+        return apps;
+    } else {
+        QVariantList applist_variant = reply.value();
+        for (auto &v: applist_variant)
+	    apps++;
+    }
+
+    return apps;
+}
+
 void HomescreenHandler::getRunnables(void)
 {
-	struct json_object *json_applist;
-	QString applist;
+    struct json_object *json_applist;
+    QString applist;
     QStringList apps;
 
     QDBusPendingReply<QVariantList> reply = applaunch_iface->listApplications(true);

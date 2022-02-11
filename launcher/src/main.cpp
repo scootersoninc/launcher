@@ -44,7 +44,9 @@ int main(int argc, char *argv[])
 
     // mail.qml loading
     QQmlApplicationEngine engine;
+    int apps = homescreenHandler->getRunnablesCount();
     engine.rootContext()->setContextProperty(QStringLiteral("homescreenHandler"), homescreenHandler);
+    engine.rootContext()->setContextProperty(QStringLiteral("apps_len"), apps);
     engine.load(QUrl(QStringLiteral("qrc:/Launcher.qml")));
     homescreenHandler->getRunnables();
 
