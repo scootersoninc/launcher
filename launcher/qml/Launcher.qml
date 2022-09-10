@@ -67,7 +67,7 @@ ApplicationWindow {
             // uncomment this out if you want to highlight the currently selected item
             //highlight: Rectangle { width: 80; height: 80; color: "steelblue"; opacity: 0.3 }
 
-            model: ApplicationModel { id: applicationModel }
+            model: ApplicationModel
             delegate: Item {
                 width: grid.cellWidth
                 height: grid.cellHeight
@@ -131,24 +131,11 @@ ApplicationWindow {
                     property string currentApp: ''
                     onClicked: {
                         parent.GridView.view.currentIndex = index
-                        currentApp = applicationModel.appid(parent.GridView.view.currentIndex)
-                        homescreenHandler.tapShortcut(currentApp)
+                        currentApp = ApplicationModel.appid(parent.GridView.view.currentIndex)
+                        console.debug("Launcher: Starting app " + currentApp)
+                        applauncher.startApplication(currentApp)
+                        console.debug("Launcher: Started app " + currentApp)
                     }
-                }
-            }
-
-            Connections {
-                target: homescreenHandler
-                onAppListUpdate: {
-                    console.warn("applist update in Launcher.qml")
-                    applicationModel.updateApplist(info);
-                }
-            }
-            Connections {
-                target: homescreenHandler
-                onInitAppList: {
-                    console.warn("applist init in Launcher.qml")
-                    applicationModel.initAppList(data);
                 }
             }
         }

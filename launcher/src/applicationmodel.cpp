@@ -1,19 +1,9 @@
+// SPDX-License-Identifier: Apache-2.0
 /*
  * Copyright (C) 2016 The Qt Company Ltd.
  * Copyright (C) 2016, 2017 Mentor Graphics Development (Deutschland) GmbH
  * Copyright (c) 2018,2019 TOYOTA MOTOR CORPORATION
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright (C) 2022 Konsulko Group
  */
 
 #include "applicationmodel.h"
@@ -197,18 +187,13 @@ void ApplicationModel::updateApplist(QStringList info)
     endResetModel();
 }
 
-void ApplicationModel::initAppList(QString data)
+void ApplicationModel::initAppList(QList<QMap<QString, QString>> &apps)
 {
     HMI_DEBUG("launcher","init application list.");
     beginResetModel();
-    QJsonDocument japps = QJsonDocument::fromJson(data.toUtf8());
-    for (auto const &app : japps.array()) {
-        QJsonObject const &jso = app.toObject();
-        auto const name = jso["name"].toString();
-        auto const id = jso["id"].toString();
-        auto const icon = get_icon_name(jso);
-
-        d->addApp(icon, name, id);
+    qDebug() << "ApplicationModel::initAppList: got " << apps.size() << " apps";
+    for (int i = 0; i < apps.size(); i++) {
+        d->addApp(apps[i]["icon_path"], apps[i]["name"], apps[i]["id"]);
     }
     endResetModel();
 }
