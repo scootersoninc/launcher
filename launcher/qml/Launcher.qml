@@ -38,7 +38,7 @@ ApplicationWindow {
 
         Image {
             anchors.centerIn: parent
-            source: './images/AGL_HMI_Blue_Background_Car-01.png'
+            source: './images/bg_scooterson.png'
         }
 
         GridView {
